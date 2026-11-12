@@ -1,0 +1,79 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-07-09/server.schema.json",
+  "categories": [
+    "finance",
+    "blockchain",
+    "developer-tools"
+  ],
+  "description": "Pay-per-call SINCOR feeds for agent builders: live Base ETH/USD monitor price, unsigned solver quotes from public Base pool state, and ERC-8004 validation/reputation lookups. MCP tools are free to call locally; the companion HTTP gateway serves the first 10 calls/day free, then an x402 HTTP 402 challenge at 0.01 USDC on Base with a 500 bps platform fee, settled through the sincor-x402 package's labelled local-reference rail (no mainnet settlement yet).",
+  "displayName": "SINCOR \u2014 Price Feed, Solver Quotes, ERC-8004 Oracle",
+  "honesty": {
+    "oracle": "interface level \u2014 SincorValidationReputationOracle is NOT deployed on Base mainnet; default backend is the real compiled contract on an in-process local chain with labelled demo seed data",
+    "settlement": "local-reference only \u2014 sincor-x402==0.1.0 labelled reference facilitator/escrow; NOT on-chain; no mainnet settlement until the founder's CDP facilitator decision lands",
+    "solver": "quotes are unsigned paper measurements from public pool state (signed: false, signature: null); nothing can be submitted from a quote"
+  },
+  "keywords": [
+    "x402",
+    "base",
+    "usdc",
+    "price-feed",
+    "solver",
+    "erc-8004",
+    "reputation",
+    "agent-payments",
+    "sincor"
+  ],
+  "name": "io.github.OrderofChaos33/sincor-mcp-server",
+  "packages": [
+    {
+      "environmentVariables": [
+        {
+          "description": "Path to the price-monitors checkout (read-only DB access).",
+          "isRequired": false,
+          "name": "SINCOR_PRICE_MONITORS_PATH"
+        },
+        {
+          "description": "Path to the solver quoting engine source dir.",
+          "isRequired": false,
+          "name": "SINCOR_SOLVER_SRC"
+        },
+        {
+          "description": "Path to the compiled ERC-8004 oracle artifact JSON.",
+          "isRequired": false,
+          "name": "SINCOR_ORACLE_ARTIFACT"
+        }
+      ],
+      "identifier": "sincor-mcp-server",
+      "packageArguments": [
+        "-m",
+        "sincor_mcp"
+      ],
+      "registryType": "pypi",
+      "runtimeHint": "python",
+      "transport": {
+        "type": "stdio"
+      },
+      "version": "0.1.0"
+    }
+  ],
+  "tools": [
+    {
+      "description": "Latest Base ETH/USD from the SINCOR monitor feed, with source and age.",
+      "name": "get_eth_usd_price"
+    },
+    {
+      "description": "Unsigned solver quote (signed: false) for a Base token swap intent, with route and 500 bps fee breakdown.",
+      "name": "solver_quote"
+    },
+    {
+      "description": "ERC-8004 reputation lookup (score/successes/failures) for an agent address. Interface level \u2014 oracle not deployed on mainnet.",
+      "name": "erc8004_reputation"
+    },
+    {
+      "description": "Whether a (taskId, SIGIL commitment) attestation is recorded on the ERC-8004 oracle. Interface level.",
+      "name": "erc8004_validation_lookup"
+    }
+  ],
+  "version": "0.1.0",
+  "websiteUrl": "https://getsincor.com"
+}

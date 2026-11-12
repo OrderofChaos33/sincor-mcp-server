@@ -1,0 +1,36 @@
+# Smithery configuration for sincor-mcp-server (stdio, local).
+# Founder submits this repo to Smithery — nothing is auto-published.
+startCommand:
+  type: stdio
+  configSchema:
+    type: object
+    description: Paths to the SINCOR components this server wraps.
+    properties:
+      priceMonitorsPath:
+        type: string
+        description: "Path to the price-monitors checkout (its state/price_monitors.db is read read-only)."
+        default: "~/workspace/price-monitors"
+      solverSrc:
+        type: string
+        description: "Path to the solver package source (src dir of the solver quoting engine)."
+        default: "~/workspace/sincor2-solver-wt/src"
+      oracleArtifact:
+        type: string
+        description: "Path to the compiled SincorValidationReputationOracle Foundry artifact JSON."
+        default: "~/workspace/sincor2-erc8004/out/SincorValidationReputationOracle.sol/SincorValidationReputationOracle.json"
+    required: []
+  commandFunction:
+    |-
+    (config) => ({
+      command: 'python',
+      args: ['-m', 'sincor_mcp'],
+      env: {
+        SINCOR_PRICE_MONITORS_PATH: config.priceMonitorsPath || '',
+        SINCOR_SOLVER_SRC: config.solverSrc || '',
+        SINCOR_ORACLE_ARTIFACT: config.oracleArtifact || ''
+      }
+    })
+  exampleConfig:
+    priceMonitorsPath: "~/workspace/price-monitors"
+    solverSrc: "~/workspace/sincor2-solver-wt/src"
+    oracleArtifact: "~/workspace/sincor2-erc8004/out/SincorValidationReputationOracle.sol/SincorValidationReputationOracle.json"

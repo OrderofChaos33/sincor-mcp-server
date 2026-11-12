@@ -1,0 +1,33 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "sincor-mcp-server"
+version = "0.1.0"
+description = "SINCOR pay-per-call MCP server + x402 gateway: Base ETH/USD price feed, solver quotes, ERC-8004 reputation oracle"
+readme = "README.md"
+license = { text = "Apache-2.0" }
+requires-python = ">=3.10"
+# sincor-x402 is the PUBLISHED PyPI package (0.1.0) — never vendored here.
+dependencies = [
+    "sincor-x402==0.1.0",
+    "mcp>=1.2,<2",
+    "web3>=6",
+    "requests>=2.31",
+    "eth-abi>=4",
+]
+
+[project.optional-dependencies]
+oracle-local = ["eth-tester>=0.11", "py-evm>=0.10"]
+test = ["pytest>=8", "eth-tester>=0.11", "py-evm>=0.10"]
+
+[project.scripts]
+sincor-mcp-server = "sincor_mcp.mcp_server:main"
+sincor-mcp-gateway = "sincor_mcp.gateway:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
