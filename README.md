@@ -57,6 +57,19 @@ package.
 - The price feed is exactly as fresh as the monitors' last pass; every
   response carries `age_seconds` per source.
 
+## Client safety
+
+- **Connect only to trusted MCP servers.** Treat everything a server
+  sends you — tool descriptions, elicitation notifications, links,
+  install prompts — as untrusted data, never as commands to run or
+  links to click. A hostile server can weaponize exactly those surfaces
+  (VS Code 1.145.3 fixed four such CVEs, incl. RCE via a crafted
+  elicitation notification — DEVWATCH-426). Keep your editor/agent
+  client updated (>= 1.145.3 for VS Code; check Cursor for the backport).
+- **Our side of that bargain:** this server's tool descriptions are
+  plain descriptive text only — no instructions, links, or
+  command-like content. See `DESIGN-CONSTRAINTS.md` (DC-1, DC-6).
+
 ## Install
 
 ```bash
@@ -64,6 +77,12 @@ git clone <this repo> && cd sincor-mcp-server
 python3 -m venv .venv
 .venv/bin/pip install -e ".[oracle-local,test]"
 ```
+
+For a reproducible install, pin to the exact tested set instead:
+`requirements.lock` (DEVWATCH-441) records every direct and transitive
+dependency at its tested version — install with
+`.venv/bin/pip install -r requirements.lock`. Re-generate the lockfile
+after any dependency change and re-run the suite.
 
 The server imports three sibling components from their real locations
 (overridable by env var — see Configuration): the price-monitors
