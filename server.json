@@ -24,6 +24,10 @@
     "sincor"
   ],
   "name": "io.github.OrderofChaos33/sincor-mcp-server",
+  "repository": {
+    "source": "github",
+    "url": "https://github.com/OrderofChaos33/sincor-mcp-server"
+  },
   "packages": [
     {
       "environmentVariables": [
