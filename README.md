@@ -1,3 +1,5 @@
+<!-- mcp-name: io.github.OrderofChaos33/sincor-mcp-server -->
+
 # sincor-mcp-server
 
 SINCOR's already-built capabilities, packaged for agent builders where
@@ -15,6 +17,15 @@ Two surfaces, one implementation: a **stdio MCP server** and an **HTTP
 gateway** that fronts the same calls with an x402 paywall built on the
 published [`sincor-x402==0.1.0`](https://pypi.org/project/sincor-x402/)
 package.
+
+## Tools
+
+| Tool | What it does |
+|---|---|
+| `get_eth_usd_price` | Latest Base ETH/USD from the SINCOR monitor feed (Uniswap V3 pool state ×2 RPC + Chainlink), with source and `age_seconds`. Read-only. |
+| `solver_quote` | Unsigned solver quote (`signed: false`) for a Base token swap intent, with route and the 500 bps fee breakdown. Paper measurement — nothing can be submitted from it. |
+| `erc8004_reputation` | ERC-8004 reputation lookup (score / successes / failures) for an agent address. Interface level — oracle not deployed on mainnet. |
+| `erc8004_validation_lookup` | Whether a (task_id, SIGIL commitment) attestation is recorded on the ERC-8004 oracle. Interface level. |
 
 ## The paywall (gateway)
 
@@ -127,6 +138,14 @@ Add to `~/.cursor/mcp.json`:
 }
 ```
 
+### Claude Code
+
+From inside the cloned repo, after the Install steps above:
+
+```bash
+claude mcp add sincor -e PYTHONPATH="$PWD/src" -- "$PWD/.venv/bin/python" -m sincor_mcp
+```
+
 ## Run the HTTP gateway
 
 ```bash
@@ -178,10 +197,19 @@ exactly (the accepts[] hedge rejects rewrites before any settlement).
 
 ## Registry submission kit (founder submits — nothing auto-published)
 
-- `smithery.yaml` — Smithery stdio server config.
-- `server.json` — MCP registry / mcp.so / Glama-style server metadata
-  (the `repository` field is added when the founder creates the public
-  GitHub remote at submission time — this repo is local-only until then).
+- `smithery.yaml` — Smithery stdio server config (legacy path — see the
+  Smithery kit doc in the SINCOR ops files before relying on it).
+- `server.json` — official MCP Registry metadata, kept schema-clean
+  (name `io.github.OrderofChaos33/sincor-mcp-server`; the README's first
+  line carries the matching `mcp-name:` ownership marker the registry
+  checks on the PyPI page). Publishing requires the package to exist on
+  PyPI first — that publish is separately gated.
+- `server-extras.json` — listing copy that does not fit the official
+  schema (display name, categories, keywords, tool list, honesty
+  notes) — paste material for Glama / mcp.so.
+- `glama.json` — Glama claim file (`maintainers` = the founder's GitHub
+  username; Glama recognises it on the next repository sync after he
+  connects that GitHub account to Glama).
 - This README — listing copy + install snippets.
 
 ## Tests
